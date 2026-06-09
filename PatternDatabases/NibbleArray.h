@@ -1,55 +1,31 @@
+#ifndef NIBBLE_ARRAY_H
+#define NIBBLE_ARRAY_H
+
 #include <bits/stdc++.h>
-#include "NibbleArray.h"
 
 using namespace std;
 
-NibbleArray::NibbleArray(const size_t size, const uint8_t value) :
-        size(size), arr(size / 2 + 1, value) {
-}
+class NibbleArray {
+    size_t size;
+    vector<uint8_t> arr;
 
-uint8_t NibbleArray::get(const size_t idx) const {
-    size_t byteIdx = idx / 2;
-    assert(idx <= this->size);
-    uint8_t dataByte = this->arr.at(byteIdx);
+public:
+    NibbleArray(const size_t size, const uint8_t value = 0xFF);
 
-    if (idx % 2) {
-        return dataByte & 0x0F;
-    } else {
-        return dataByte >> 4;
-    }
-}
+    uint8_t get(const size_t idx) const;
 
-void NibbleArray::set(const size_t idx, const uint8_t value) {
-    size_t byteIdx = idx / 2;
-    uint8_t currentByte = this->arr.at(byteIdx);
-    assert(idx <= this->size);
+    void set(const size_t idx, const uint8_t value);
 
-    if (idx % 2) {
-        this->arr.at(byteIdx) = (currentByte & 0xF0) | (value & 0x0F);
-    } else {
-        this->arr.at(byteIdx) = (currentByte & 0x0F) | (value << 4);
-    }
-}
+    unsigned char *data();
 
-uint8_t *NibbleArray::data() {
-    return this->arr.data();
-}
+    const unsigned char *data() const;
 
-const uint8_t *NibbleArray::data() const {
-    return this->arr.data();
-}
+    size_t storageSize() const;
 
-size_t NibbleArray::storageSize() const {
-    return this->arr.size();
-}
+    void inflate(vector<uint8_t> &dest) const;
 
-void NibbleArray::inflate(vector<uint8_t> &dest) const {
-    dest.reserve(this->size);
+    void reset(const uint8_t value = 0xFF);
 
-    for (unsigned i = 0; i < this->size; ++i)
-        dest.push_back(this->get(i));
-}
+};
 
-void NibbleArray::reset(const uint8_t value) {
-    fill(this->arr.begin(), this->arr.end(), value);
-}
+#endif
